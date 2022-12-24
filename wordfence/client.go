@@ -20,10 +20,46 @@
  * THE SOFTWARE.
  */
 
-package main
+package wordfence
 
-import "github.com/typisttech/wpsecadvi/cmd"
+import (
+	"encoding/json"
+	"net/http"
+)
 
-func main() {
-	cmd.Execute()
+const productionFeedURL string = "https://www.wordfence.com/api/intelligence/vulnerabilities/production"
+const scannerFeedURL string = "https://www.wordfence.com/api/intelligence/vulnerabilities/scanner"
+
+type Client struct {
+	httpClient *http.Client
+	url        string
+}
+
+func NewProductionFeedClient(httpClient *http.Client) Client {
+	return Client{
+		httpClient: httpClient,
+		url:        productionFeedURL,
+	}
+}
+
+func NewScannerFeedClient(httpClient *http.Client) Client {
+	return Client{
+		httpClient: httpClient,
+		url:        scannerFeedURL,
+	}
+}
+
+func (c Client) fetch() (vulnerabilities, error) {
+	resp, err := c.httpClient.Get(c.url)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	var vulns map[string]Vulnerability
+	if err := json.NewDecoder(resp.Body).Decode(&vulns); err != nil {
+		return nil, err
+	}
+
+	return vulns, nil
 }

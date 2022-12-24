@@ -1,0 +1,182 @@
+{
+    "123e4567-e89b-12d3-a456-426655440000": {
+        "id": "123e4567-e89b-12d3-a456-426655440000",
+        "software": [
+            {
+                "type": "plugin",
+                "slug": "foo-bar",
+                "affected_versions": {
+                    "* - 1.5.7": {
+                        "from_version": "*",
+                        "from_inclusive": true,
+                        "to_version": "1.5.7",
+                        "to_inclusive": true
+                    },
+                    "1.6 - 1.6.3": {
+                        "from_version": "1.6",
+                        "from_inclusive": true,
+                        "to_version": "1.6.3",
+                        "to_inclusive": true
+                    },
+                    "1.7 - 1.7.3.3": {
+                        "from_version": "1.7",
+                        "from_inclusive": true,
+                        "to_version": "1.7.3.3",
+                        "to_inclusive": true
+                    }
+                }
+            }
+        ],
+        "cve": "CVE-2022-1111"
+    },
+    "223e4567-e89b-12d3-a456-426655440000": {
+        "id": "223e4567-e89b-12d3-a456-426655440000",
+        "software": [
+            {
+                "type": "plugin",
+                "slug": "foo-bar",
+                "affected_versions": {
+                    "[1.8 - 1.8.8.8)": {
+                        "from_version": "1.8",
+                        "from_inclusive": true,
+                        "to_version": "1.8.8.8",
+                        "to_inclusive": false
+                    },
+                    "(1.9 - 1.9.9.9]": {
+                        "from_version": "1.9",
+                        "from_inclusive": false,
+                        "to_version": "1.9.9.9",
+                        "to_inclusive": true
+                    }
+                }
+            }
+        ],
+        "cve": "CVE-2022-2222"
+    },
+    "323e4567-e89b-12d3-a456-426655440000": {
+        "id": "323e4567-e89b-12d3-a456-426655440000",
+        "software": [
+            {
+                "type": "theme",
+                "slug": "foo-bar",
+                "affected_versions": {
+                    "[2.8 - 2.8.8.8)": {
+                        "from_version": "2.8",
+                        "from_inclusive": true,
+                        "to_version": "2.8.8.8",
+                        "to_inclusive": false
+                    },
+                    "(2.9 - 2.9.9]": {
+                        "from_version": "2.9",
+                        "from_inclusive": false,
+                        "to_version": "2.9.9",
+                        "to_inclusive": true
+                    }
+                }
+            }
+        ],
+        "cve": "CVE-2022-3333"
+    },
+    "423e4567-e89b-12d3-a456-426655440000": {
+        "id": "423e4567-e89b-12d3-a456-426655440000",
+        "software": [
+            {
+                "type": "core",
+                "slug": "wordpress",
+                "affected_versions": {
+                    "[3.8 - 3.8.8.8)": {
+                        "from_version": "3.8",
+                        "from_inclusive": true,
+                        "to_version": "3.8.8.8",
+                        "to_inclusive": false
+                    },
+                    "(3.9 - 3.9.9]": {
+                        "from_version": "3.9",
+                        "from_inclusive": false,
+                        "to_version": "3.9.9",
+                        "to_inclusive": true
+                    }
+                }
+            }
+        ],
+        "cve": "CVE-2022-4444"
+    },
+    "523e4567-e89b-12d3-a456-426655440000": {
+        "id": "523e4567-e89b-12d3-a456-426655440000",
+        "software": [
+            {
+                "type": "plugin",
+                "slug": "foo-bar-wildcard",
+                "affected_versions": {
+                    "* - *": {
+                        "from_version": "*",
+                        "from_inclusive": true,
+                        "to_version": "*",
+                        "to_inclusive": true
+                    }
+                }
+            }
+        ],
+        "cve": "CVE-2022-5555"
+    },
+    "623e4567-e89b-12d3-a456-426655440000": {
+        "id": "623e4567-e89b-12d3-a456-426655440000",
+        "software": [
+            {
+                "type": "plugin",
+                "slug": "foo-bar",
+                "affected_versions": {
+                    "[1.0 - 2.0]": {
+                        "from_version": "1.0",
+                        "from_inclusive": true,
+                        "to_version": "2.0",
+                        "to_inclusive": true
+                    },
+                    "[9.1.1 - 10.2.2)": {
+                        "from_version": "9.1.1",
+                        "from_inclusive": true,
+                        "to_version": "10.2.2",
+                        "to_inclusive": false
+                    }
+                }
+            }
+        ],
+        "cve": "CVE-2022-6666"
+    },
+    "723e4567-e89b-12d3-a456-426655440000": {
+        "id": "723e4567-e89b-12d3-a456-426655440000",
+        "software": [
+            {
+                "type": "plugin",
+                "slug": "foo-bar-informational",
+                "affected_versions": {
+                    "informational": {
+                        "from_version": "informational",
+                        "from_inclusive": true,
+                        "to_version": "informational",
+                        "to_inclusive": true
+                    }
+                }
+            }
+        ],
+        "cve": "CVE-2022-7777"
+    },
+    "823e4567-e89b-12d3-a456-426655440000": {
+        "id": "823e4567-e89b-12d3-a456-426655440000",
+        "software": [
+            {
+                "type": "core",
+                "slug": "wordpress",
+                "affected_versions": {
+                    "* - 6.1.1": {
+                        "from_version": "*",
+                        "from_inclusive": true,
+                        "to_version": "6.1.1",
+                        "to_inclusive": true
+                    }
+                }
+            }
+        ],
+        "cve": "CVE-2022-8888"
+    }
+}

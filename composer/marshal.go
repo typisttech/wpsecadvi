@@ -20,10 +20,19 @@
  * THE SOFTWARE.
  */
 
-package main
+package composer
 
-import "github.com/typisttech/wpsecadvi/cmd"
+import (
+	"bytes"
+	"encoding/json"
+)
 
-func main() {
-	cmd.Execute()
+func jsonUnescapedMarshal(v any) ([]byte, error) {
+	buf := new(bytes.Buffer)
+	enc := json.NewEncoder(buf)
+	enc.SetEscapeHTML(false)
+
+	err := enc.Encode(v)
+
+	return buf.Bytes(), err
 }

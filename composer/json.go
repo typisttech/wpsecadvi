@@ -20,10 +20,49 @@
  * THE SOFTWARE.
  */
 
-package main
+package composer
 
-import "github.com/typisttech/wpsecadvi/cmd"
+type JSON struct {
+	conflicts map[string]Link
+}
 
-func main() {
-	cmd.Execute()
+type stringer interface {
+	String() string
+}
+
+type Link struct {
+	name        string
+	constraints stringer
+}
+
+func NewLink(name string, constraints stringer) Link {
+	return Link{
+		name:        name,
+		constraints: constraints,
+	}
+}
+
+func (j *JSON) AddConflict(l Link) {
+	if j.conflicts == nil {
+		j.conflicts = make(map[string]Link)
+	}
+
+	j.conflicts[l.name] = l
+}
+
+type marshallableJSON struct {
+	Conflict map[string]string `json:"conflicts"`
+}
+
+func (j JSON) MarshalJSON() ([]byte, error) {
+	conflict := make(map[string]string, len(j.conflicts))
+	for _, l := range j.conflicts {
+		conflict[l.name] = l.constraints.String()
+	}
+
+	mj := marshallableJSON{
+		Conflict: conflict,
+	}
+
+	return jsonUnescapedMarshal(mj)
 }

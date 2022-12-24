@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2023 Typist Tech Limited
+ * Copyright (c) 2023 Typist Tech Limited
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,10 +20,22 @@
  * THE SOFTWARE.
  */
 
-package main
+package cmd
 
-import "github.com/typisttech/wpsecadvi/cmd"
+import (
+	"fmt"
 
-func main() {
-	cmd.Execute()
+	"github.com/spf13/cobra"
+)
+
+// wordfenceCmd represents the wordfence command
+var wordfenceCmd = &cobra.Command{
+	Use: "wordfence",
+	Run: func(cmd *cobra.Command, args []string) {
+		fmt.Println("wordfence called")
+	},
+}
+
+func init() {
+	rootCmd.AddCommand(wordfenceCmd)
 }

@@ -20,10 +20,61 @@
  * THE SOFTWARE.
  */
 
-package main
+package wordfence
 
-import "github.com/typisttech/wpsecadvi/cmd"
+import (
+	"github.com/typisttech/wpsecadvi/composer"
+	"github.com/typisttech/wpsecadvi/semver"
+)
 
-func main() {
-	cmd.Execute()
+type Generator struct {
+	client   Client
+	searcher composer.Searcher
+}
+
+func NewGenerator(client Client, searcher composer.Searcher) Generator {
+	return Generator{
+		client:   client,
+		searcher: searcher,
+	}
+}
+
+func (g Generator) Generate(ignores []string) (composer.JSON, error) {
+	json := composer.JSON{}
+
+	vulns, err := g.client.fetch()
+	if err != nil {
+		return json, err
+	}
+
+	links := make([]composer.Link, 0)
+	for t, ranges := range vulns.softwareRanges(ignores) {
+		for slug, rs := range ranges {
+			ns := g.searcher.Search(t, string(slug))
+			if len(ns) == 0 {
+				continue
+			}
+
+			cs := semver.Constraints{}
+			for _, r := range rs {
+				cs.Or(r)
+			}
+
+			for _, n := range ns {
+				if n == "" {
+					continue
+				}
+
+				l := composer.NewLink(n, cs)
+
+				links = append(links, l)
+			}
+		}
+	}
+
+	for _, l := range links {
+		json.AddConflict(l)
+	}
+
+	return json, nil
 }
