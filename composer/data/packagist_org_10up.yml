@@ -1,0 +1,37 @@
+---
+
+# https://packagist.org/?query=10up%2F
+# https://profiles.wordpress.org/10up/#content-plugins
+# https://github.com/10up/
+plugin:
+    autoshare-for-twitter:
+        10up/autoshare-for-twitter
+
+    debug-bar-elasticpress:
+        - 10up/debug-bar-elasticpress
+
+    insert-special-characters:
+        - 10up/insert-special-characters
+
+    restricted-site-access:
+        - 10up/restricted-site-access
+
+    elasticpress:
+        # https://github.com/Automattic/ElasticPress/blob/46e8e60e22b163e844a2eaf129a320219bee2e0b/composer.json
+        - 10up/elasticpress
+
+    simple-local-avatars:
+        - 10up/simple-local-avatars
+
+    publisher-media-kit:
+        - 10up/publisher-media-kit
+
+    safe-svg:
+        # https://github.com/10up/safe-svg/blob/613f00691fea36d7500e35f1cd7d4ab33d36f120/composer.json
+        - darylldoyle/safe-svg
+
+    simple-podcasting:
+        - 10up/simple-podcasting
+
+    simple-page-ordering:
+        - 10up/simple-page-ordering

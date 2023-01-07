@@ -1,0 +1,12 @@
+---
+
+# https://packagist.org/?query=inpsyde
+# https://profiles.wordpress.org/inpsyde/#content-plugins
+# https://github.com/inpsyde
+plugin:
+    adminimize:
+        # https://github.com/bueltge/adminimize/blob/06dbfe58ce4a8ff9ffcf3e80630ef43bdfec2551/composer.json
+        - bueltge/adminimze
+    authenticator:
+        # https://github.com/bueltge/authenticator/blob/eb4286a7d56c5b9024ceb7a3ff639c3b2d60dae9/composer.json
+        - bueltge/authenticator

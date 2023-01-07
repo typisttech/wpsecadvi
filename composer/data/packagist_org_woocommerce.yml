@@ -1,0 +1,16 @@
+---
+
+# https://packagist.org/?query=woocommerce
+# https://profiles.wordpress.org/woocommerce/#content-plugins
+# https://github.com/woocommerce
+plugin:
+    woo-gutenberg-products-block:
+        # https://github.com/woocommerce/woocommerce-blocks/blob/7a1415a78dc17eeccc0c2d26a5a0d948c67c4977/composer.json
+        - woocommerce/woocommerce-blocks
+
+    woocommerce-gateway-amazon-payments-advanced:
+        # https://github.com/woocommerce/woocommerce-gateway-amazon-pay/blob/a67c52e3c307d294d74d914de99ddee5bbece15c/composer.json
+        - woocommerce/woocommerce-gateway-amazon-payments-advanced
+
+    woocommerce:
+        - woocommerce/woocommerce

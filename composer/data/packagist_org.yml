@@ -1,0 +1,25 @@
+---
+
+# https://packagist.org/?type=wordpress-core
+# https://packagist.org/providers/wordpress/core-implementation
+core:
+    - johnpbloch/wordpress-core
+    - pantheon-systems/wordpress-composer
+    - roots/wordpress-full
+    - roots/wordpress-no-content
+
+plugin:
+    elementor:
+        - elementor/elementor
+
+    wp-rocket:
+        # https://docs.wp-rocket.me/article/1301-wp-rocket-installation-from-github-using-composer
+        - wp-media/wp-rocket
+
+    google-site-kit:
+        # https://github.com/google/site-kit-wp/blob/afc11b01efdd5c28e34a56c146f5f0a1bdd2a42f/composer.json
+        - google/google-site-kit
+
+    mailchimp-for-wp:
+        # https://github.com/ibericode/mailchimp-for-wordpress/blob/a47d289d61dd0126ba852789d35e4be3e2acd9bd/composer.json
+        - ibericode/mailchimp-for-wordpress

@@ -1,0 +1,21 @@
+---
+
+# https://packagist.org/?query=automattic
+# https://profiles.wordpress.org/automattic/#content-plugins
+# https://github.com/automattic
+plugin:
+    co-authors-plus:
+        - automattic/co-authors-plus
+
+    jetpack:
+        - automattic/jetpack
+
+    vaultpress:
+        - automattic/vaultpress
+
+    wp-job-manager:
+        - automattic/wp-job-manager
+
+    wp-super-cache:
+        # https://github.com/Automattic/wp-super-cache/blob/8f918824ffc2c85a5148344553610fa07b3f1c7c/composer.json
+        - automattic/wp-super-cache

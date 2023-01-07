@@ -1,0 +1,13 @@
+---
+
+# https://packagist.org/?query=awesomemotive
+# https://profiles.wordpress.org/awesomemotive/#content-plugins
+# https://github.com/awesomemotive
+plugin:
+    easy-digital-downloads:
+        # https://github.com/awesomemotive/easy-digital-downloads/blob/968c7121177e30c7f65bed3f944eab007aa6961a/composer.json
+        - easy-digital-downloads/easy-digital-downloads
+
+    wp-mail-smtp:
+        # https://github.com/awesomemotive/WP-Mail-SMTP/blob/293d4657bff23ecec968a089eac6e5b1e21fde30/composer.json
+        - awesomemotive/wp-mail-smtp

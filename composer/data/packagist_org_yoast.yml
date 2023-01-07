@@ -1,0 +1,16 @@
+---
+
+# https://packagist.org/?query=yoast
+# https://profiles.wordpress.org/yoast/#content-plugins
+# https://github.com/yoast
+# https://github.com/yoast-dist
+plugin:
+    duplicate-post:
+        - yoast/duplicate-post
+
+    wordpress-seo:
+        - yoast/wordpress-seo
+
+    clicky:
+        # https://github.com/jdevalk/clicky/blob/0c7cb97747caa783acf231664010dba2723e694d/composer.json
+        - yoast/clicky
