@@ -50,6 +50,11 @@ func (g Generator) Generate(ignores []string) (composer.JSON, error) {
 	links := make([]composer.Link, 0)
 	for t, ranges := range vulns.softwareRanges(ignores) {
 		for slug, rs := range ranges {
+			// Just skip WPMU.
+			if t == composer.WPCore && slug == "wpmu" {
+				continue
+			}
+
 			ns := g.searcher.Search(t, string(slug))
 			if len(ns) == 0 {
 				continue

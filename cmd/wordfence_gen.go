@@ -38,10 +38,6 @@ var (
 
 	baseContent []byte
 
-	httpClient = http.DefaultClient
-
-	searcher = composer.NewProductionSearcher()
-
 	wordfenceGenCmd = &cobra.Command{
 		Use: "gen {--scanner|--production}",
 		Example: `
@@ -61,6 +57,14 @@ var (
   $ wpsecadvi wordfence gen --ignore UUID1 --ignore CVE-2099-0001
 
 	Skip vulnerabilities by CVEs (production feed only) or UUIDs
+
+  $ wpsecadvi wordfence gen --plugin-vendor foo --plugin-vendor wpackagist-plugin
+
+	Use custom plugin vendor names.
+
+  $ wpsecadvi wordfence gen --theme-vendor foo --theme-vendor wpackagist-theme
+
+	Use custom theme vendor names.
 `,
 		Short: "Generate composer conflicts from vulnerability data feed.",
 		PreRunE: func(cmd *cobra.Command, args []string) error {
@@ -75,17 +79,14 @@ var (
 			return nil
 		},
 		Run: func(cmd *cobra.Command, args []string) {
-			var c wordfence.Client
-			if scanner {
-				c = wordfence.NewScannerFeedClient(httpClient)
-			} else if production {
-				c = wordfence.NewProductionFeedClient(httpClient)
-			}
+			g := wordfence.NewGenerator(
+				newClient(),
+				newSearcher(),
+			)
 
-			g := wordfence.NewGenerator(c, searcher)
-
-			ignores := viper.GetStringSlice("wordfence.gen.ignore")
-			j, err := g.Generate(ignores)
+			j, err := g.Generate(
+				viper.GetStringSlice("wordfence.gen.ignore"),
+			)
 			cobra.CheckErr(err)
 
 			jBytes, err := j.Merge(baseContent)
@@ -110,12 +111,22 @@ func init() {
 		// https://www.wordfence.com/threat-intel/vulnerabilities/wordpress-core/wordpress-core-611-unauthenticated-blind-server-side-request-forgery
 		"CVE-2022-3590", "112ed4f2-fe91-4d83-a3f7-eaf889870af4",
 	}
-	wordfenceGenCmd.Flags().StringArrayP("ignore", "i", defaultIgnore, "CVEs or UUIDs to ignores")
+	wordfenceGenCmd.Flags().StringArrayP("ignore", "i", defaultIgnore, "CVEs or UUIDs to ignore")
 	viper.BindPFlag("wordfence.gen.ignore", wordfenceGenCmd.Flags().Lookup("ignore"))
 	viper.SetDefault("wordfence.gen.ignore", defaultIgnore)
 
 	wordfenceGenCmd.Flags().StringP("base", "b", "", "Base composer.json to merge")
 	viper.BindPFlag("wordfence.gen.base", wordfenceGenCmd.Flags().Lookup("base"))
+
+	pv := []string{composer.WPackagistPluginVendor}
+	wordfenceGenCmd.Flags().StringArrayP("plugin-vendor", "p", pv, "Plugin vendor")
+	viper.BindPFlag("wordfence.gen.plugin-vendor", wordfenceGenCmd.Flags().Lookup("plugin-vendor"))
+	viper.SetDefault("wordfence.gen.plugin-vendor", pv)
+
+	tv := []string{composer.WPackagistThemeVendor}
+	wordfenceGenCmd.Flags().StringArrayP("theme-vendor", "t", tv, "Theme vendor")
+	viper.BindPFlag("wordfence.gen.theme-vendor", wordfenceGenCmd.Flags().Lookup("theme-vendor"))
+	viper.SetDefault("wordfence.gen.theme-vendor", tv)
 }
 
 func readBaseContent() error {
@@ -133,4 +144,37 @@ func readBaseContent() error {
 	baseContent = bc
 
 	return nil
+}
+
+func newSearcher() composer.CompositedSearcher {
+	s := composer.NewCompositedSearcher()
+
+	for _, v := range viper.GetStringSlice("wordfence.gen.plugin-vendor") {
+		if v == "" {
+			continue
+		}
+		s.AddSearcher(
+			composer.NewPrefixedSearcher(composer.WPPlugin, v),
+		)
+	}
+	for _, v := range viper.GetStringSlice("wordfence.gen.theme-vendor") {
+		if v == "" {
+			continue
+		}
+		s.AddSearcher(
+			composer.NewPrefixedSearcher(composer.WPTheme, v),
+		)
+	}
+
+	return s
+}
+
+func newClient() wordfence.Client {
+	hc := http.DefaultClient
+
+	if scanner {
+		return wordfence.NewScannerFeedClient(hc)
+	}
+
+	return wordfence.NewProductionFeedClient(hc)
 }

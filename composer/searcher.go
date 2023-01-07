@@ -30,17 +30,15 @@ const (
 	WPCore   PackageType = "wordpress-core"
 	WPPlugin PackageType = "wordpress-plugin"
 	WPTheme  PackageType = "wordpress-theme"
+
+	WPackagistPluginVendor = "wpackagist-plugin"
+	WPackagistThemeVendor  = "wpackagist-theme"
 )
 
 var (
 	// TODO: Read from yaml files.
 	findPackagistOrgCoreFunc SearcherFunc = func(t PackageType, slug string) []string {
 		if t != WPCore {
-			return nil
-		}
-
-		// For Wordfence feeds.
-		if slug == "wpmu" {
 			return nil
 		}
 
@@ -63,16 +61,10 @@ func (f SearcherFunc) Search(t PackageType, slug string) []string {
 	return f(t, slug)
 }
 
-func NewProductionSearcher() CompositedSearcher {
+func NewCompositedSearcher() CompositedSearcher {
 	cs := CompositedSearcher{}
 
 	cs.AddSearcher(findPackagistOrgCoreFunc)
-	cs.AddSearcher(
-		NewPrefixedSearcher(WPPlugin, "wpackagist-plugin"),
-	)
-	cs.AddSearcher(
-		NewPrefixedSearcher(WPTheme, "wpackagist-theme"),
-	)
 
 	return cs
 }
