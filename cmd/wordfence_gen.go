@@ -69,7 +69,7 @@ var (
 			}
 
 			if err := readBaseContent(); err != nil {
-				return nil
+				return err
 			}
 
 			return nil
