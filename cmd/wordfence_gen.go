@@ -100,7 +100,7 @@ func init() {
 		// https://www.wordfence.com/threat-intel/vulnerabilities/wordpress-core/wordpress-core-611-unauthenticated-blind-server-side-request-forgery
 		"CVE-2022-3590", "112ed4f2-fe91-4d83-a3f7-eaf889870af4",
 	}
-	wordfenceGenCmd.Flags().StringArray("ignore", defaultIgnore, "CVEs or UUIDs to ignores")
+	wordfenceGenCmd.Flags().StringArrayP("ignore", "i", defaultIgnore, "CVEs or UUIDs to ignores")
 	viper.BindPFlag("wordfence.gen.ignore", wordfenceGenCmd.Flags().Lookup("ignore"))
 	viper.SetDefault("wordfence.gen.ignore", defaultIgnore)
 }
