@@ -36,30 +36,40 @@ var (
 	scanner    bool
 	production bool
 
+	baseContent []byte
+
 	httpClient = http.DefaultClient
 
 	searcher = composer.NewProductionSearcher()
 
 	wordfenceGenCmd = &cobra.Command{
-		Use: "gen [--scanner|--production]",
+		Use: "gen {--scanner|--production}",
 		Example: `
-  Generate from Wordfence scanner feed 
-  $ wpsecadvi wordfence gen --scanner 
+  
+  $ wpsecadvi wordfence gen --scanner
 
-  Generate from Wordfence production feed 
-  $ wpsecadvi wordfence gen --production 
+	Generate from Wordfence scanner feed 
 
-  Skip vulnerabilities by UUIDs 
-  $ wpsecadvi wordfence gen --scanner --ignore UUID1 --ignore UUID2 
-  $ wpsecadvi wordfence gen --production --ignore UUID1 --ignore UUID2 
+  $ wpsecadvi wordfence gen --production
 
-  Skip vulnerabilities by CVEs (only available on the production feed) 
-  $ wpsecadvi wordfence gen --production --ignore CVE-2099-0001 --ignore CVE-2099-0002 
+	Generate from Wordfence production feed
+
+  $ wpsecadvi wordfence gen --base /path/to/composer.base.json 
+
+	Merge with a base JSON file
+
+  $ wpsecadvi wordfence gen --ignore UUID1 --ignore CVE-2099-0001
+
+	Skip vulnerabilities by CVEs (production feed only) or UUIDs
 `,
 		Short: "Generate composer conflicts from vulnerability data feed.",
 		PreRunE: func(cmd *cobra.Command, args []string) error {
 			if !scanner && !production {
 				return fmt.Errorf("error: missing feed selection. Excatly one of %s flags required", []string{"scanner", "production"})
+			}
+
+			if err := readBaseContent(); err != nil {
+				return nil
 			}
 
 			return nil
@@ -78,7 +88,7 @@ var (
 			j, err := g.Generate(ignores)
 			cobra.CheckErr(err)
 
-			jBytes, err := j.MarshalJSON()
+			jBytes, err := j.Merge(baseContent)
 			cobra.CheckErr(err)
 
 			fmt.Fprintln(os.Stdout, string(jBytes))
@@ -103,4 +113,24 @@ func init() {
 	wordfenceGenCmd.Flags().StringArrayP("ignore", "i", defaultIgnore, "CVEs or UUIDs to ignores")
 	viper.BindPFlag("wordfence.gen.ignore", wordfenceGenCmd.Flags().Lookup("ignore"))
 	viper.SetDefault("wordfence.gen.ignore", defaultIgnore)
+
+	wordfenceGenCmd.Flags().StringP("base", "b", "", "Base composer.json to merge")
+	viper.BindPFlag("wordfence.gen.base", wordfenceGenCmd.Flags().Lookup("base"))
+}
+
+func readBaseContent() error {
+	base := viper.GetString("wordfence.gen.base")
+	if base == "" {
+		baseContent = []byte(`{}`)
+		return nil
+	}
+
+	bc, err := os.ReadFile(base)
+	if err != nil {
+		return err
+	}
+
+	baseContent = bc
+
+	return nil
 }
