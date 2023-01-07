@@ -66,3 +66,12 @@ func (j JSON) MarshalJSON() ([]byte, error) {
 
 	return jsonUnescapedMarshal(mj)
 }
+
+func (j JSON) Merge(other []byte) ([]byte, error) {
+	bs, err := j.MarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+
+	return jsonMerge(bs, other)
+}

@@ -36,3 +36,50 @@ func jsonUnescapedMarshal(v any) ([]byte, error) {
 
 	return buf.Bytes(), err
 }
+
+// jsonMerge merges the two JSON-marshaled []byte
+// preferring a over b when the keys from both objects
+// are included and their values merged recursively.
+//
+// It returns an error if a or b cannot be JSON-unmarshalled.
+func jsonMerge(a, b []byte) ([]byte, error) {
+	var j1 interface{}
+	err := json.Unmarshal(a, &j1)
+	if err != nil {
+		return nil, err
+	}
+
+	var j2 interface{}
+	err = json.Unmarshal(b, &j2)
+	if err != nil {
+		return nil, err
+	}
+
+	merged := mergeInterfaces(j1, j2)
+
+	return jsonUnescapedMarshal(merged)
+}
+
+func mergeInterfaces(x1, x2 interface{}) interface{} {
+	switch x1 := x1.(type) {
+	case map[string]interface{}:
+		x2, ok := x2.(map[string]interface{})
+		if !ok {
+			return x1
+		}
+		for k, v2 := range x2 {
+			if v1, ok := x1[k]; ok {
+				x1[k] = mergeInterfaces(v1, v2)
+			} else {
+				x1[k] = v2
+			}
+		}
+	case nil:
+		// mergeInterfaces(nil, map[string]interface{...}) -> map[string]interface{...}
+		x2, ok := x2.(map[string]interface{})
+		if ok {
+			return x2
+		}
+	}
+	return x1
+}

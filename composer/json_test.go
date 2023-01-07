@@ -160,3 +160,111 @@ func TestJSON_MarshalJSON(t *testing.T) {
 		})
 	}
 }
+
+func TestJSON_Merge(t *testing.T) {
+	type fields struct {
+		conflicts map[string]Link
+	}
+	type args struct {
+		other string
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		args    args
+		want    string
+		wantErr bool
+	}{
+		{
+			name: "single merge empty",
+			fields: fields{conflicts: map[string]Link{
+				"foo/bar": {
+					name:        "foo/bar",
+					constraints: mockStringer{str: ">=1,<2.2"},
+				},
+			}},
+			args:    args{other: "{}"},
+			want:    `{"conflicts": {"foo/bar": ">=1,<2.2"}}`,
+			wantErr: false,
+		},
+		{
+			name: "multiple merge empty",
+			fields: fields{conflicts: map[string]Link{
+				"foo/bar": {
+					name:        "foo/bar",
+					constraints: mockStringer{str: ">=1,<2.2"},
+				},
+				"bar/bar": {
+					name:        "bar/bar",
+					constraints: mockStringer{str: ">=1.2.3,<2.2.3|>=8.8.8|<=9.9.9"},
+				},
+				"baz/bar": {
+					name:        "baz/bar",
+					constraints: mockStringer{str: "*"},
+				},
+			}},
+			args:    args{other: "{}"},
+			want:    `{"conflicts": {"baz/bar": "*", "foo/bar": ">=1,<2.2", "bar/bar": ">=1.2.3,<2.2.3|>=8.8.8|<=9.9.9"}}`,
+			wantErr: false,
+		},
+		{
+			name: "merge",
+			fields: fields{conflicts: map[string]Link{
+				"foo/bar": {
+					name:        "foo/bar",
+					constraints: mockStringer{str: ">=1,<2.2"},
+				},
+				"bar/bar": {
+					name:        "bar/bar",
+					constraints: mockStringer{str: ">=1.2.3,<2.2.3|>=8.8.8|<=9.9.9"},
+				},
+				"baz/bar": {
+					name:        "baz/bar",
+					constraints: mockStringer{str: "*"},
+				},
+			}},
+			args:    args{other: `{"name": "foo/bar"}`},
+			want:    `{"name": "foo/bar", "conflicts": {"baz/bar": "*", "foo/bar": ">=1,<2.2", "bar/bar": ">=1.2.3,<2.2.3|>=8.8.8|<=9.9.9"}}`,
+			wantErr: false,
+		},
+		{
+			name: "override conflict",
+			fields: fields{conflicts: map[string]Link{
+				"foo/bar": {
+					name:        "foo/bar",
+					constraints: mockStringer{str: ">=1,<2.2"},
+				},
+				"bar/bar": {
+					name:        "bar/bar",
+					constraints: mockStringer{str: ">=1.2.3,<2.2.3|>=8.8.8|<=9.9.9"},
+				},
+				"baz/bar": {
+					name:        "baz/bar",
+					constraints: mockStringer{str: "*"},
+				},
+			}},
+			args:    args{other: `{"name": "foo/bar", "conflicts": {"baz/bar": "1.2.3"}}`},
+			want:    `{"name": "foo/bar", "conflicts": {"baz/bar": "*", "foo/bar": ">=1,<2.2", "bar/bar": ">=1.2.3,<2.2.3|>=8.8.8|<=9.9.9"}}`,
+			wantErr: false,
+		},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			j := JSON{
+				conflicts: tc.fields.conflicts,
+			}
+			got, err := j.Merge([]byte(tc.args.other))
+
+			if tc.wantErr {
+				assert.Error(t, err)
+				return
+			}
+
+			if !assert.NoError(t, err) {
+				return
+			}
+
+			assert.JSONEq(t, tc.want, string(got))
+		})
+	}
+}
