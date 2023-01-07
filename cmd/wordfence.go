@@ -23,17 +23,13 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
 )
 
 // wordfenceCmd represents the wordfence command
 var wordfenceCmd = &cobra.Command{
-	Use: "wordfence",
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("wordfence called")
-	},
+	Use:   "wordfence",
+	Short: "Commands for Wordfence",
 }
 
 func init() {
