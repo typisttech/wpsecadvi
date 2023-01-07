@@ -66,7 +66,7 @@ var (
 
 	Use custom theme vendor names.
 `,
-		Short: "Generate composer conflicts from vulnerability data feed.",
+		Short: "Generate composer conflicts from vulnerability data feed",
 		PreRunE: func(cmd *cobra.Command, args []string) error {
 			if !scanner && !production {
 				return fmt.Errorf("error: missing feed selection. Excatly one of %s flags required", []string{"scanner", "production"})

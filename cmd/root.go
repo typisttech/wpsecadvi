@@ -35,7 +35,7 @@ var cfgFile string
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "wpsecadvi",
-	Short: "Generate composer conflicts for WordPress-related known security vulnerabilities.",
+	Short: "Generate composer conflicts for WordPress-related known security vulnerabilities",
 	Long: `Generate composer meta packages to ensures WordPress projects don't have 
 dependencies with known security vulnerabilities installed.`,
 }
