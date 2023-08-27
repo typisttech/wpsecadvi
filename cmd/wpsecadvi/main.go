@@ -19,52 +19,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+package main
 
-package wordfence
-
-import (
-	"fmt"
-	"github.com/stretchr/testify/assert"
-	"net/http"
-	"net/http/httptest"
-	"os"
-	"strconv"
-	"testing"
-)
-
-func TestClient_Fetch(t *testing.T) {
-	tests := []struct {
-		name    string
-		fixture string
-		want    vulnerabilities
-	}{
-		{
-			name:    "production",
-			fixture: "testdata/production.json",
-			want:    productionVulnerabilities,
-		},
-	}
-	for i, tc := range tests {
-		i, tc := i, tc
-		t.Run(strconv.Itoa(i), func(t *testing.T) {
-			svr := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-				file, _ := os.ReadFile(tc.fixture)
-				fmt.Fprint(w, string(file))
-			}))
-
-			c := Client{
-				httpClient: svr.Client(),
-				url:        svr.URL,
-			}
-
-			got, err := c.fetch()
-
-			if err != nil {
-				t.Errorf("Unexpected error: %v", err)
-				return
-			}
-
-			assert.Equal(t, tc.want, got)
-		})
-	}
+func main() {
+	Execute()
 }
