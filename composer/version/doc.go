@@ -20,8 +20,15 @@
  * THE SOFTWARE.
  */
 
-package main
-
-func main() {
-	Execute()
-}
+// Package version implements comparison of a subset of [composer/semver]
+// compilable version strings.
+//
+// The general form of a version string accepted by this package is
+//
+//	[v]MAJOR[.MINOR[.PATCH[.REVISION]]]
+//
+// where square brackets indicate optional parts of the syntax; MAJOR, MINOR,
+// PATCH and REVISION are decimal integers without extra leading zeros.
+//
+// [composer/semver]: https://github.com/composer/semver/blob/fa1ec24f0ab1efe642671ec15c51a3ab879f59bf/tests/VersionParserTest.php#L150-L174
+package version
