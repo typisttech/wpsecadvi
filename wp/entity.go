@@ -24,6 +24,7 @@ package wp
 
 import (
 	"errors"
+
 	"github.com/typisttech/wpsecadvi/composer/version"
 )
 
@@ -36,13 +37,13 @@ const (
 )
 
 var (
-	ErrEmptyEntitySlug = errors.New("empty entity string")
+	ErrEmptyEntitySlug = errors.New("empty entity slug")
 )
 
 type Entity struct {
-	kind          kind
-	slug          string
-	versionRanges []version.Range
+	kind       kind
+	slug       string
+	constraint version.Constraint
 }
 
 func NewCoreEntity() *Entity {
@@ -50,6 +51,7 @@ func NewCoreEntity() *Entity {
 }
 
 func NewPluginEntity(slug string) (*Entity, error) {
+	// TODO: Test me.
 	if slug == "" {
 		return nil, ErrEmptyEntitySlug
 	}
@@ -57,32 +59,33 @@ func NewPluginEntity(slug string) (*Entity, error) {
 }
 
 func NewThemeEntity(slug string) (*Entity, error) {
+	// TODO: Test me.
 	if slug == "" {
 		return nil, ErrEmptyEntitySlug
 	}
 	return &Entity{kind: theme, slug: slug}, nil
 }
 
-func (e *Entity) IsCore() bool {
-	return e.kind == core
-}
-
-func (e *Entity) IsPlugin() bool {
-	return e.kind == plugin
-}
-
-func (e *Entity) IsTheme() bool {
-	return e.kind == theme
-}
+//func (e *Entity) IsCore() bool {
+//	return e.kind == core
+//}
+//
+//func (e *Entity) IsPlugin() bool {
+//	return e.kind == plugin
+//}
+//
+//func (e *Entity) IsTheme() bool {
+//	return e.kind == theme
+//}
 
 func (e *Entity) Slug() string {
 	return e.slug
 }
 
-func (e *Entity) VersionRanges() []version.Range {
-	return e.versionRanges
+func (e *Entity) Constraint() version.Constraint {
+	return e.constraint
 }
 
-func (e *Entity) Or(r version.Range) {
-	e.versionRanges = append(e.versionRanges, r)
+func (e *Entity) Or(constraint version.Constraint) {
+	e.constraint = append(e.constraint, constraint...)
 }

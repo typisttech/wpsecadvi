@@ -129,26 +129,26 @@ var tests = []struct {
 func TestNewVersion(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := NewVersion(tt.in)
+			got, err := New(tt.in)
 
 			if tt.out == "" {
 				if err == nil {
-					t.Errorf("NewVersion() error = nil, want error")
+					t.Errorf("New() error = nil, want error")
 				}
 
 				if !errors.Is(err, ErrMalformedVersionString) {
-					t.Errorf("NewVersion() error = %v, want ErrMalformedVersionString", err)
+					t.Errorf("New() error = %v, want ErrMalformedVersionString", err)
 				}
 
 				return
 			}
 
 			if err != nil {
-				t.Errorf("NewVersion() error = %v, want nil", err)
+				t.Errorf("New() error = %v, want nil", err)
 				return
 			}
 			if got.normalize() != tt.out {
-				t.Errorf("NewVersion() got = %v, want %v", got, tt.out)
+				t.Errorf("New() got = %v, want %v", got, tt.out)
 			}
 		})
 	}

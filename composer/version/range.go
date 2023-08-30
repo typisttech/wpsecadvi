@@ -35,64 +35,62 @@ type Range struct {
 	toInclusive   bool
 }
 
-type RangeOptFn func(*Range)
+type RangeOptionFunc func(*Range)
 
-func WithInclusiveCeiling(v *Version) RangeOptFn {
+func WithCeiling(v *Version, inclusive bool) RangeOptionFunc {
+	// TODO: test me!
 	return func(r *Range) {
 		r.to = v
-		r.toInclusive = true
+		r.toInclusive = inclusive && v != nil
 	}
 }
 
-func WithNonInclusiveCeiling(v *Version) RangeOptFn {
-	return func(r *Range) {
-		r.to = v
-		r.toInclusive = false
-	}
+func WithInclusiveCeiling(v *Version) RangeOptionFunc {
+	return WithCeiling(v, true)
 }
 
-func WithoutCeiling() RangeOptFn {
-	return func(r *Range) {
-		r.to = nil
-		r.toInclusive = false
-	}
+func WithNonInclusiveCeiling(v *Version) RangeOptionFunc {
+	return WithCeiling(v, false)
 }
 
-func WithInclusiveFloor(v *Version) RangeOptFn {
+func WithoutCeiling() RangeOptionFunc {
+	return WithCeiling(nil, false)
+}
+
+func WithFloor(v *Version, inclusive bool) RangeOptionFunc {
 	return func(r *Range) {
 		r.from = v
-		r.fromInclusive = true
+		r.fromInclusive = inclusive && v != nil
 	}
 }
 
-func WithNonInclusiveFloor(v *Version) RangeOptFn {
-	return func(r *Range) {
-		r.from = v
-		r.fromInclusive = false
-	}
+func WithInclusiveFloor(v *Version) RangeOptionFunc {
+	return WithFloor(v, true)
 }
 
-func WithoutFloor() RangeOptFn {
-	return func(r *Range) {
-		r.from = nil
-		r.fromInclusive = false
-	}
+func WithNonInclusiveFloor(v *Version) RangeOptionFunc {
+	return WithFloor(v, false)
 }
 
-func NewRange(optFns ...RangeOptFn) Range {
+func WithoutFloor() RangeOptionFunc {
+	// TODO: test me!
+	return WithFloor(nil, false)
+}
+
+func NewRange(optionFuncs ...RangeOptionFunc) (*Range, error) {
 	r := &Range{}
 
-	for _, optFn := range optFns {
+	for _, optFn := range optionFuncs {
 		optFn(r)
 	}
 
 	// TODO: Validate r.from <= r.to
 	// TODO: Validate when r.from == r.to, then r.fromInclusive == true && r.toInclusive == true
 
-	return *r
+	return r, nil
 }
 
-func (r Range) String() string {
+func (r *Range) String() string {
 	if r.from == nil && r.to == nil {
 		return "*"
 	}
@@ -125,8 +123,8 @@ func (r Range) String() string {
 	return strings.Trim(str, " ")
 }
 
-// Constraint represents a slice of [Range] grouped together with logical OR.
-type Constraint []Range
+// Constraint represents a slice of [*Range] grouped together with logical OR.
+type Constraint []*Range
 
 func (c Constraint) String() string {
 	rs := or(c...)
@@ -142,13 +140,13 @@ func (c Constraint) String() string {
 	return strings.Join(ss, "||")
 }
 
-func or(rs ...Range) []Range {
+func or(rs ...*Range) []*Range {
 	if len(rs) == 0 {
-		return []Range{}
+		return nil
 	}
 
 	f, rs := rs[0], rs[1:]
-	result := []Range{f}
+	result := []*Range{f}
 
 	for i, r := range rs {
 		for j, s := range result {
@@ -164,9 +162,9 @@ func or(rs ...Range) []Range {
 	return result
 }
 
-func orTwo(a Range, b Range) (Range, bool) {
+func orTwo(a *Range, b *Range) (*Range, bool) {
 	if !overlap(a, b) {
-		return Range{}, false
+		return nil, false
 	}
 
 	if a.from == nil && a.to == nil {
@@ -194,7 +192,7 @@ func orTwo(a Range, b Range) (Range, bool) {
 			fromInclusive = a.fromInclusive && b.fromInclusive
 		}
 
-		return Range{from, fromInclusive, nil, false}, true
+		return &Range{from, fromInclusive, nil, false}, true
 	}
 
 	// Both without floor
@@ -212,10 +210,10 @@ func orTwo(a Range, b Range) (Range, bool) {
 			toInclusive = a.toInclusive && b.toInclusive
 		}
 
-		return Range{nil, false, to, toInclusive}, true
+		return &Range{nil, false, to, toInclusive}, true
 	}
 
-	// Ensure a has a lower from
+	// Ensure a has the lower from
 	//	  |<-a->|
 	//	      |<---b--->|
 	// Or,
@@ -246,10 +244,10 @@ func orTwo(a Range, b Range) (Range, bool) {
 		toInclusive = a.toInclusive || b.toInclusive
 	}
 
-	return Range{from, fromInclusive, to, toInclusive}, true
+	return &Range{from, fromInclusive, to, toInclusive}, true
 }
 
-func overlap(a Range, b Range) bool {
+func overlap(a *Range, b *Range) bool {
 	if a.from == nil && a.to == nil {
 		return true
 	}
@@ -274,7 +272,7 @@ func overlap(a Range, b Range) bool {
 		return true
 	}
 
-	// Ensure a has a lower from
+	// Ensure a has the lower from
 	//	  |<-a->|
 	//	      |<---b--->|
 	// Or,

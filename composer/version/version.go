@@ -45,10 +45,10 @@ type Version struct {
 	revision uint64
 }
 
-// NewVersion parses a given string and returns a pointer of [Version] or
-// an error if unable to parse the version. If the version is not composer
+// New parses a given string and returns a pointer of [Version] or an error
+// if unable to parse the version. If the version string is not composer
 // compilable it attempts to convert it.
-func NewVersion(v string) (*Version, error) {
+func New(v string) (*Version, error) {
 	r := regexp.MustCompile(regex)
 
 	if !r.MatchString(v) {

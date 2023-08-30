@@ -1,0 +1,37 @@
+{
+    "848ccbdc-c6f1-480f-a272-cd459e706713": {
+        "id": "848ccbdc-c6f1-480f-a272-cd459e706713",
+        "title": "Example Vulnerability",
+        "software": [
+            {
+                "type": "plugin",
+                "name": "Example Plugin",
+                "slug": "example",
+                "affected_versions": {
+                    "1.0.0 - 1.2.3": {
+                        "from_version": "1.0.0",
+                        "from_inclusive": true,
+                        "to_version": "1.2.3",
+                        "to_inclusive": true
+                    }
+                },
+                "patched": true,
+                "patched_versions": [
+                    "1.2.4"
+                ],
+                "references": [
+                    "http:\/\/www.wordfence.com/threat-intel/vulnerabilities/example"
+                ]
+            }
+        ],
+        "published": "1998-01-09 00:00:00",
+        "copyrights": {
+            "message": "This record contains material that is subject to copyright",
+            "defiant": {
+                "notice": "Copyright 2012-2023 Defiant Inc.",
+                "license": "Defiant hereby grants you a perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable copyright license to reproduce, prepare derivative works of, publicly display, publicly perform, sublicense, and distribute this software vulnerability information. Any copy of the software vulnerability information you make for such purposes is authorized provided that you, include a hyperlink to this vulnerability record, and reproduce Defiant's copyright designation and this license in any such copy.",
+                "license_url": "https:\/\/www.wordfence.com\/wti-community-edition-terms-and-conditions\/"
+            }
+        }
+    }
+}

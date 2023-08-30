@@ -1,0 +1,60 @@
+{
+    "848ccbdc-c6f1-480f-a272-cd459e706713": {
+        "id": "848ccbdc-c6f1-480f-a272-cd459e706713",
+        "title": "Example Vulnerability",
+        "software": [
+            {
+                "type": "plugin",
+                "name": "Example Plugin",
+                "slug": "example",
+                "affected_versions": {
+                    "1.0.0 - 1.2.3": {
+                        "from_version": "1.0.0",
+                        "from_inclusive": true,
+                        "to_version": "1.2.3",
+                        "to_inclusive": true
+                    }
+                },
+                "patched": true,
+                "patched_versions": [
+                    "1.2.4"
+                ],
+                "remediation": "Update to version 1.2.4, or a newer patched version"
+            }
+        ],
+        "description": "An example vulnerability",
+        "references": [
+            "http:\/\/www.wordfence.com/threat-intel/vulnerabilities/example"
+        ],
+        "cwe": {
+            "id": 80,
+            "name": "Improper Neutralization of Script-Related HTML Tags in a Web Page (Basic XSS)",
+            "description": "The software receives input from an upstream component, but it does not neutralize or incorrectly neutralizes special characters such as <, >, and & that could be interpreted as web-scripting elements when they are sent to a downstream component that processes web pages."
+        },
+        "cvss": {
+            "vector": "CVSS:3.1\/A:N\/I:L\/C:L\/S:U\/UI:N\/PR:N\/AC:L\/AV:N",
+            "score": 6.5,
+            "rating": "Medium"
+        },
+        "cve": "CVE-1998-1000",
+        "cve_link": "https:\/\/www.cve.org\/CVERecord?id=CVE-1998-1000",
+        "researchers": [
+            "A. Researcher"
+        ],
+        "published": "1998-01-09 00:00:00",
+        "updated": "2022-08-05 20:14:05",
+        "copyrights": {
+            "message": "This record contains material that is subject to copyright",
+            "defiant": {
+                "notice": "Copyright 2012-2023 Defiant Inc.",
+                "license": "Defiant hereby grants you a perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable copyright license to reproduce, prepare derivative works of, publicly display, publicly perform, sublicense, and distribute this software vulnerability information. Any copy of the software vulnerability information you make for such purposes is authorized provided that you, include a hyperlink to this vulnerability record, and reproduce Defiant's copyright designation and this license in any such copy.",
+                "license_url": "https:\/\/www.wordfence.com\/wti-community-edition-terms-and-conditions\/"
+            },
+            "mitre": {
+                "notice": "Copyright 1999-2022 The MITRE Corporation",
+                "license": "CVE Usage: MITRE hereby grants you a perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable copyright license to reproduce, prepare derivative works of, publicly display, publicly perform, sublicense, and distribute Common Vulnerabilities and Exposures (CVE\u00ae). Any copy you make for such purposes is authorized provided that you reproduce MITRE's copyright designation and this license in any such copy.",
+                "license_url": "https:\/\/www.cve.org\/Legal\/TermsOfUse"
+            }
+        }
+    }
+}
