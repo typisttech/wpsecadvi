@@ -25,7 +25,6 @@ package wordfence
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
 
@@ -41,10 +40,6 @@ const (
 	// information for newly discovered vulnerabilities that are actively being
 	// researched in addition to those included in the ProductionFeed.
 	ScannerFeed = "https://www.wordfence.com/api/intelligence/v2/vulnerabilities/scanner"
-)
-
-var (
-	ErrBadStatusCode = errors.New("bad status code")
 )
 
 type Client struct {
