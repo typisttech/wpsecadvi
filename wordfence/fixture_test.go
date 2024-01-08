@@ -28,8 +28,8 @@ import (
 )
 
 var (
-	productionExample = map[string]Vulnerability{
-		"848ccbdc-c6f1-480f-a272-cd459e706713": {
+	productionExample = []Vulnerability{
+		{
 			ID: "848ccbdc-c6f1-480f-a272-cd459e706713",
 			Software: []Software{
 				{
@@ -49,8 +49,8 @@ var (
 		},
 	}
 
-	productionMultiple = map[string]Vulnerability{
-		"0114f098-713d-4eef-8643-901f607375de": {
+	productionMultiple = []Vulnerability{
+		{
 			ID: "0114f098-713d-4eef-8643-901f607375de",
 			Software: []Software{
 				{
@@ -80,7 +80,7 @@ var (
 			},
 			CVE: "CVE-2022-21664",
 		},
-		"01179ac2-ad68-4a5d-af67-70d57ed611d2": {
+		{
 			ID: "01179ac2-ad68-4a5d-af67-70d57ed611d2",
 			Software: []Software{
 				{
@@ -98,7 +98,7 @@ var (
 			},
 			CVE: "CVE-2015-9527",
 		},
-		"014da588-9494-493e-8659-590b8e8c14a6": {
+		{
 			ID: "014da588-9494-493e-8659-590b8e8c14a6",
 			Software: []Software{
 				{
@@ -127,7 +127,7 @@ var (
 				},
 			},
 		},
-		"06fee60a-e96c-49ce-9007-0d402ef46d72": {
+		{
 			ID: "06fee60a-e96c-49ce-9007-0d402ef46d72",
 			Software: []Software{
 				{
@@ -146,8 +146,8 @@ var (
 		},
 	}
 
-	scannerExample = map[string]Vulnerability{
-		"848ccbdc-c6f1-480f-a272-cd459e706713": {
+	scannerExample = []Vulnerability{
+		{
 			ID: "848ccbdc-c6f1-480f-a272-cd459e706713",
 			Software: []Software{
 				{

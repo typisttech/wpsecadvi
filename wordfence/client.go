@@ -27,6 +27,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"golang.org/x/net/context/ctxhttp"
 )
@@ -42,6 +43,9 @@ const (
 	ScannerFeed = "https://www.wordfence.com/api/intelligence/v2/vulnerabilities/scanner"
 )
 
+// excludeFunc returns true if a [Vulnerability] should be excluded from [Repo.Get] result.
+type excludeFunc func(v Vulnerability) bool
+
 type Client struct {
 	// HTTPClient provides a http.Client fetch Wordfence data feed.
 	// If the client is nil, http.DefaultClient is used.
@@ -49,15 +53,54 @@ type Client struct {
 	// URL to the Wordfence data feed.
 	// If the URL is empty, ProductionFeed is used.
 	URL string
+
+	excludeFuncs []excludeFunc
 }
 
-func (c Client) fetch(ctx context.Context) (map[string]Vulnerability, error) {
+// WhereIDNotIn excludes [Vulnerability] results by IDs.
+func (c *Client) WhereIDNotIn(ids ...string) *Client {
+	return c.withExcludeFunc(func(v Vulnerability) bool {
+		return slices.Contains(ids, v.ID)
+	})
+}
+
+// WhereCVENotIn excludes [Vulnerability] by CVEs.
+func (c *Client) WhereCVENotIn(cves ...string) *Client {
+	return c.withExcludeFunc(func(v Vulnerability) bool {
+		return slices.Contains(cves, v.CVE)
+	})
+}
+
+func (c *Client) withExcludeFunc(fn excludeFunc) *Client {
+	c.excludeFuncs = append(c.excludeFuncs, fn)
+	return c
+}
+
+func (c *Client) fetch(ctx context.Context) (vulnerabilities, error) {
 	url := c.URL
 	if url == "" {
 		url = ProductionFeed
 	}
 
-	return get[map[string]Vulnerability](ctx, c.HTTPClient, url)
+	vsMap, err := get[map[string]Vulnerability](ctx, c.HTTPClient, url)
+	if err != nil {
+		return nil, fmt.Errorf("failed to fetch vulnerabilities from Wordfence feed %s: %w", url, err)
+	}
+
+	vs := make(vulnerabilities, 0, len(vsMap))
+	for _, v := range vsMap {
+		vs = append(vs, v)
+	}
+
+	for _, fn := range c.excludeFuncs {
+		vs = slices.DeleteFunc(vs, fn)
+	}
+
+	if len(vs) == 0 {
+		return nil, fmt.Errorf("no vulnerabilities found from Wordfence feed %s", url)
+	}
+
+	return vs, nil
 }
 
 func get[T any](ctx context.Context, client *http.Client, url string) (T, error) {
@@ -70,7 +113,7 @@ func get[T any](ctx context.Context, client *http.Client, url string) (T, error)
 	defer res.Body.Close()
 
 	if res.StatusCode != http.StatusOK {
-		return out, fmt.Errorf("HTTP GET request to %s failed with %s", url, res.Status)
+		return out, fmt.Errorf("HTTP GET request failed with %s", res.Status)
 	}
 
 	if err := json.NewDecoder(res.Body).Decode(&out); err != nil {

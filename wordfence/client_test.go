@@ -28,16 +28,18 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
-	"reflect"
 	"testing"
 	"time"
+
+	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 )
 
 func TestClient_fetch(t *testing.T) {
 	tests := []struct {
 		name    string
 		fixture string
-		want    map[string]Vulnerability
+		want    vulnerabilities
 		wantErr bool
 	}{
 		{
@@ -61,7 +63,7 @@ func TestClient_fetch(t *testing.T) {
 		{
 			"empty",
 			"testdata/empty.json",
-			map[string]Vulnerability{},
+			vulnerabilities{},
 			false,
 		},
 		{
@@ -77,7 +79,7 @@ func TestClient_fetch(t *testing.T) {
 				w.WriteHeader(http.StatusOK)
 
 				file, _ := os.ReadFile(tt.fixture)
-				w.Write(file)
+				_, _ = w.Write(file)
 			}))
 			defer ts.Close()
 
@@ -89,16 +91,20 @@ func TestClient_fetch(t *testing.T) {
 
 			got, err := c.fetch(ctx)
 
-			if tt.wantErr && (err == nil) {
+			if (err != nil) != tt.wantErr {
 				t.Errorf("fetch() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !tt.wantErr && (err != nil) {
-				t.Errorf("fetch() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("fetch() got = %v, want %v", got, tt.want)
+
+			diff := cmp.Diff(
+				tt.want,
+				got,
+				cmpopts.SortSlices(func(a, b Vulnerability) bool {
+					return a.ID < b.ID
+				}),
+			)
+			if diff != "" {
+				t.Errorf("fetch() mismatch (-want +got):\n%s", diff)
 			}
 		})
 	}
@@ -110,7 +116,7 @@ func TestClient_fetch_cancelable(t *testing.T) {
 		w.WriteHeader(http.StatusOK)
 
 		file, _ := os.ReadFile("testdata/production.example.json")
-		w.Write(file)
+		_, _ = w.Write(file)
 
 		time.Sleep(1 * time.Second)
 	}))
@@ -138,7 +144,7 @@ func TestClient_fetch_http_error(t *testing.T) {
 		w.WriteHeader(http.StatusNotFound)
 
 		file, _ := os.ReadFile("testdata/production.example.json")
-		w.Write(file)
+		_, _ = w.Write(file)
 	}))
 	defer ts.Close()
 
@@ -152,5 +158,91 @@ func TestClient_fetch_http_error(t *testing.T) {
 
 	if err == nil {
 		t.Errorf("fetch() error = %v, wantErr true", err)
+	}
+}
+
+func TestClient_WhereIDNotIn(t *testing.T) {
+	tests := []struct {
+		fixture string
+		ids     []string
+		want    vulnerabilities
+		wantErr bool
+	}{
+		{
+			fixture: "testdata/production.multiple.json",
+			ids:     nil,
+			want:    productionMultiple,
+			wantErr: false,
+		},
+		{
+			fixture: "testdata/production.multiple.json",
+			ids:     []string{},
+			want:    productionMultiple,
+			wantErr: false,
+		},
+		{
+			fixture: "testdata/production.multiple.json",
+			ids:     []string{"014da588-9494-493e-8659-590b8e8c14a6"}, // wpgsi & wpgsiProfessional
+			want:    append(productionMultiple[0:2], productionMultiple[3:]...),
+			wantErr: false,
+		},
+		//{
+		//	fixture: "testdata/production.multiple.json",
+		//	ids: []string{
+		//		"0114f098-713d-4eef-8643-901f607375de", // core
+		//		"014da588-9494-493e-8659-590b8e8c14a6", // wpgsi & wpgsiProfessional
+		//	},
+		//	want:    append(productionMultiple[1:2], productionMultiple[4:]...),
+		//	wantErr: false,
+		//},
+		//{
+		//	fixture: "testdata/production.multiple.json",
+		//	ids: []string{
+		//		"0114f098-713d-4eef-8643-901f607375de", // core
+		//		"01179ac2-ad68-4a5d-af67-70d57ed611d2", // simpleShippingEdd
+		//		"014da588-9494-493e-8659-590b8e8c14a6", // wpgsi & wpgsiProfessional
+		//		"06fee60a-e96c-49ce-9007-0d402ef46d72", // dtChocolate
+		//	},
+		//	want:    nil,
+		//	wantErr: true,
+		//},
+	}
+	for _, tt := range tests {
+		t.Run("", func(t *testing.T) {
+			ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				w.WriteHeader(http.StatusOK)
+
+				file, _ := os.ReadFile(tt.fixture)
+				_, _ = w.Write(file)
+			}))
+			defer ts.Close()
+
+			c := Client{
+				HTTPClient: ts.Client(),
+				URL:        ts.URL,
+			}
+			ctx := context.Background()
+
+			got, err := c.WhereIDNotIn(tt.ids...).fetch(ctx)
+
+			if (err != nil) != tt.wantErr {
+				t.Errorf("WhereIDNotIn().fetch() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+
+			diff := cmp.Diff(
+				tt.want,
+				got,
+				cmpopts.SortSlices(func(a, b Vulnerability) bool {
+					return a.ID < b.ID
+				}),
+				cmpopts.SortSlices(func(a, b Software) bool {
+					return a.Type+a.Slug < b.Type+b.Slug
+				}),
+			)
+			if diff != "" {
+				t.Errorf("WhereIDNotIn().fetch() mismatch (-want +got):\n%s", diff)
+			}
+		})
 	}
 }

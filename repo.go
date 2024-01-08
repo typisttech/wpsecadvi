@@ -20,27 +20,26 @@
  * THE SOFTWARE.
  */
 
-package wordfence
+package wpsecadvi
 
-import (
-	"context"
-
-	"github.com/typisttech/wpsecadvi/wp"
-)
-
-type fetcher interface {
-	fetch(ctx context.Context) (vulnerabilities, error)
-}
-
-type Repo struct {
-	Client fetcher
-}
-
-func (r *Repo) Get(ctx context.Context) ([]*wp.Entity, error) {
-	vs, err := r.Client.fetch(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	return vs.entities()
-}
+//type repo interface {
+//	Get(ctx context.Context) ([]*wp.Entity, error)
+//}
+//
+//type Client struct {
+//	// HTTPClient provides a http.Client fetch Wordfence data feed.
+//	// If the client is nil, http.DefaultClient is used.
+//	HTTPClient *http.Client
+//	// URL to the Wordfence data feed.
+//	// If the URL is empty, ProductionFeed is used.
+//	URL string
+//}
+//
+//func (c Client) fetch(ctx context.Context) (map[string]Vulnerability, error) {
+//	url := c.URL
+//	if url == "" {
+//		url = ProductionFeed
+//	}
+//
+//	return get[map[string]Vulnerability](ctx, c.HTTPClient, url)
+//}
