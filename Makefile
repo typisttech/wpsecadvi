@@ -28,10 +28,13 @@ RESET   := $(shell tput -Txterm sgr0)
 
 ## Common:
 .PHONY: default
-default: check test build ## Alias of check, test and build
+default: build ## Alias build
 
 .PHONY: all
 all: check test build-all ## Alias of check, test, build-all
+
+.PHONY: dev
+dev: check test ## Alias of check and test
 
 .PHONY: clean
 clean: test-clean build-clean ## Clean up all generated files
