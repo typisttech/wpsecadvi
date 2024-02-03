@@ -1,0 +1,28 @@
+name: govulncheck
+
+on:
+  schedule:
+    - cron: '23 05 * * *'
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+  govulncheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: 'stable'
+      - run: go version
+      - run: go install golang.org/x/vuln/cmd/govulncheck@latest
+      - run: govulncheck --show version -test ./...
