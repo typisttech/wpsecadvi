@@ -1,0 +1,46 @@
+version: 1
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - main: ./cmd/wpsecadvi
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+    mod_timestamp: '{{ .CommitTimestamp }}'
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w -X main.version={{.Version}} -X main.fullCommit={{.FullCommit}} -X main.commitOn={{ .CommitDate }} -X main.isGitDirty={{ .IsGitDirty }}
+
+gomod:
+  proxy: true
+  env:
+    - GOPROXY=https://proxy.golang.org
+    - GOSUMDB=sum.golang.org
+  mod: mod
+
+archives:
+  - format: tar.gz
+    # this name template makes the OS and Arch compatible with the results of `uname`
+    name_template: >-
+      {{ .ProjectName }}_
+      {{- title .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
+      {{- if .Arm }}v{{ .Arm }}{{ end }}
+
+changelog:
+  # TODO: goreleaser > v1.23.0 renamed from `skip` to `disable`.
+  # https://github.com/goreleaser/goreleaser/commit/29f30b623ef8f0a19607afab22b3f3a2f9f68172
+  skip: true
+
+checksum:
+  disable: false
+
+report_sizes: true
