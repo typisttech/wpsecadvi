@@ -1,3 +1,3 @@
 module github.com/typisttech/wpsecadvi
 
-go 1.21.111
+go 1.21
