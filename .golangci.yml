@@ -1,0 +1,59 @@
+linters:
+  presets:
+    - bugs
+    - comment
+    - complexity
+    - error
+    - format
+    - import
+    - metalinter
+    - module
+    - performance
+    - sql
+    - style
+    - test
+    - unused
+
+#  disable:
+#    - depguard
+#    - dupl
+#    - exhaustruct
+#    - godox
+#    - lll
+#    - nlreturn
+#    - nonamedreturns
+#    - paralleltest
+#    - tagliatelle
+#    - testpackage
+#    - varnamelen
+#    - wrapcheck
+#    - wsl # TODO
+
+#linters-settings:
+#  ireturn:
+#    allow:
+#      - anon
+#      - error
+#      - empty
+#      - stdlib
+#      - (or|er)$
+#      - generic
+#      - T
+
+#issues:
+#  exclude-rules:
+#    - path: '(.+)_test\.go'
+#      linters:
+#        - bodyclose
+#        - dupword
+#        - forcetypeassert
+#        - funlen
+#        - gochecknoglobals
+#        - maintidx
+#        - unparam
+#    - path: 'cmd/wpsecadvi'
+#      linters:
+#        - unparam
+#    - path: 'cmd/wpsecadvi/version.go'
+#      linters:
+#        - gochecknoglobals
