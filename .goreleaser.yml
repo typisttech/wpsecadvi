@@ -36,9 +36,7 @@ archives:
       {{- if .Arm }}v{{ .Arm }}{{ end }}
 
 changelog:
-  # TODO: goreleaser > v1.23.0 renamed from `skip` to `disable`.
-  # https://github.com/goreleaser/goreleaser/commit/29f30b623ef8f0a19607afab22b3f3a2f9f68172
-  skip: true
+  use: github-native
 
 checksum:
   disable: false
