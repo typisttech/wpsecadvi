@@ -53,4 +53,4 @@ jobs:
         with:
           distribution: goreleaser
           version: latest
-          args: check --verbose
+          args: check

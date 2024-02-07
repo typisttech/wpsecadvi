@@ -24,6 +24,6 @@ jobs:
         with:
           distribution: goreleaser
           version: latest
-          args: release --clean --fail-fast --verbose
+          args: release --clean --fail-fast
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
