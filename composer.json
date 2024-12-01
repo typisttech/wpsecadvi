@@ -1,28 +1,58 @@
 {
-  "name": "minicli/application",
-  "description": "Minicli Application Template",
+  "name": "typisttech/wpsecadvi",
+  "description": "TODO",
+  "type": "project",
+  "keywords": [
+    "security",
+    "wordfence",
+    "wordpress"
+  ],
+  "homepage": "https://github.com/typisttech/wpsecadvi",
   "license": "MIT",
-  "homepage": "https://github.com/minicli/application",
-  "keywords": ["cli","command-line", "template"],
+  "authors": [
+    {
+      "name": "Typist Tech",
+      "email": "wpsecadvi@typist.tech",
+      "homepage": "https://typist.tech/"
+    },
+    {
+      "name": "Tang Rufus",
+      "email": "tangrufus@gmail.com",
+      "homepage": "https://typist.tech/",
+      "role": "Developer"
+    }
+  ],
+  "support": {
+    "email": "wpsecadvi@typist.tech",
+    "issues": "https://github.com/TypistTech/wpsecadvi/issues",
+    "source": "https://github.com/TypistTech/wpsecadvi"
+  },
+  "require": {
+    "php": "^8.4",
+    "guzzlehttp/guzzle": "^7.9",
+    "minicli/command-help": "^1.0",
+    "minicli/minicli": "^4.2"
+  },
+  "require-dev": {
+    "laravel/pint": "^1.10",
+    "pestphp/pest": "^3.5"
+  },
   "autoload": {
     "psr-4": {
       "App\\": "app/"
     }
   },
-  "require": {
-    "php": ">=8.1",
-    "minicli/minicli": "^4.2",
-    "minicli/command-help": "^1.0"
-  },
-  "require-dev": {
-    "pestphp/pest": "^1.23",
-    "laravel/pint": "^1.10"
-  },
   "scripts": {
-    "lint" : ["pint"],
-    "test:lint" : ["pint --test"],
-    "test:unit" : ["pest"],
-    "test" : [
+    "lint": [
+      "pint"
+    ],
+    "test:lint": [
+      "pint --test"
+    ],
+    "test:unit": [
+      "pest"
+    ],
+    "test": [
       "@test:lint",
       "@test:unit"
     ]
@@ -30,6 +60,7 @@
   "config": {
     "allow-plugins": {
       "pestphp/pest-plugin": true
-    }
+    },
+    "sort-packages": true
   }
 }
